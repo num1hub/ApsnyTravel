@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mountain } from 'lucide-react';
+import { CONTACT_LINKS } from '@/lib/contact';
 
 export function Footer() {
   return (
@@ -32,16 +33,26 @@ export function Footer() {
             <h3 className="text-white font-bold text-lg mb-4">Связаться</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors flex items-center gap-2">
+                <a
+                  href={CONTACT_LINKS.telegramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white transition-colors flex items-center gap-2"
+                >
                   Telegram
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors flex items-center gap-2">
+                <a
+                  href={CONTACT_LINKS.whatsappUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white transition-colors flex items-center gap-2"
+                >
                   WhatsApp
                 </a>
               </li>
-              <li>+7 (900) 123-45-67</li>
+              <li>{CONTACT_LINKS.phoneDisplay}</li>
             </ul>
           </div>
         </div>
