@@ -1,3 +1,4 @@
+import { REVIEWS, Review } from '../constants';
 import { Tour } from '../types';
 
 export class ApiError extends Error {
@@ -49,4 +50,22 @@ export async function fetchTourBySlug(slug: string): Promise<Tour> {
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+export async function fetchReviewsByTourId(tourId: string): Promise<Review[]> {
+  if (!tourId) {
+    throw new ApiError('Missing tour id');
+  }
+
+  const simulatedDelayMs = 800 + Math.random() * 700;
+
+  await new Promise((resolve) => setTimeout(resolve, simulatedDelayMs));
+
+  const reviews = REVIEWS.filter((review) => review.tourId === tourId);
+
+  if (!reviews.length) {
+    return [];
+  }
+
+  return reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
