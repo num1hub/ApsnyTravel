@@ -1,21 +1,25 @@
+import { TOURS } from '../constants';
 import { Tour } from '../types';
 
-export async function fetchTourBySlug(slug: string): Promise<Tour> {
+/**
+ * Simulates fetching a tour from a backend while staying entirely client-side.
+ * Adds a small artificial delay so loading states can be exercised.
+ */
+export function fetchTourBySlug(slug: string): Promise<Tour> {
   if (!slug) {
-    throw new Error('Missing tour slug');
+    return Promise.reject(new Error('Missing tour slug'));
   }
 
-  const response = await fetch(`/api/tours/${encodeURIComponent(slug)}`);
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const tour = TOURS.find((item) => item.slug === slug);
 
-  if (!response.ok) {
-    throw new Error(`Failed to load tour: ${response.statusText}`);
-  }
+      if (!tour) {
+        reject(Object.assign(new Error('Tour not found'), { status: 404 }));
+        return;
+      }
 
-  const data = (await response.json()) as Tour;
-
-  if (!data?.slug) {
-    throw new Error('Received invalid tour payload');
-  }
-
-  return data;
+      resolve(tour);
+    }, 600);
+  });
 }

@@ -89,16 +89,23 @@ export function TourDetail() {
               <h2 className="text-xl font-bold text-slate-900 mb-4">О туре</h2>
               {/* Rendering simplified Markdown content as plain text blocks for MVP */}
               <div className="prose prose-slate max-w-none text-slate-600 whitespace-pre-line">
-                {tour.description_md.split('##').map((section, idx) => {
-                  if (!section.trim()) return null;
-                  const [title, ...body] = section.split('\n');
-                  return (
-                    <div key={idx} className="mb-6 last:mb-0">
-                      <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>
-                      <p>{body.join('\n').trim()}</p>
-                    </div>
-                  );
-                })}
+                {(tour.description_md?.split('##').map((section) => section.trim()).filter(Boolean) ?? []).map(
+                  (section, idx) => {
+                    const [title, ...bodyLines] = section.split('\n').map((line) => line.trim());
+                    const body = bodyLines.join('\n').trim();
+
+                    return (
+                      <div key={idx} className="mb-6 last:mb-0">
+                        <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>
+                        {body ? <p>{body}</p> : null}
+                      </div>
+                    );
+                  },
+                )}
+
+                {(!tour.description_md || !tour.description_md.trim()) && (
+                  <p className="text-slate-500">Описание скоро появится.</p>
+                )}
               </div>
             </div>
 
