@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import clsx from 'clsx';
+import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 interface TourContentProps {
@@ -7,21 +8,81 @@ interface TourContentProps {
   galleryImages: string[];
 }
 
-const markdownComponents = {
-  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="text-xl font-bold text-slate-900" {...props} />
+const markdownComponents: Components = {
+  h1: ({ className, ...props }) => (
+    <h1
+      className={clsx(
+        'mt-6 text-2xl font-bold text-slate-900 first:mt-0',
+        className
+      )}
+      {...props}
+    />
   ),
-  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="text-lg font-bold text-slate-900" {...props} />
+  h2: ({ className, ...props }) => (
+    <h2
+      className={clsx(
+        'mt-6 text-xl font-bold text-slate-900 first:mt-0',
+        className
+      )}
+      {...props}
+    />
   ),
-  ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className="list-disc space-y-2 pl-6" {...props} />
+  h3: ({ className, ...props }) => (
+    <h3
+      className={clsx(
+        'mt-5 text-lg font-semibold text-slate-900 first:mt-0',
+        className
+      )}
+      {...props}
+    />
   ),
-  ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol className="list-decimal space-y-2 pl-6" {...props} />
+  p: ({ className, ...props }) => (
+    <p
+      className={clsx(
+        'text-base leading-relaxed text-slate-700',
+        'mt-4 first:mt-0',
+        className
+      )}
+      {...props}
+    />
   ),
-  li: (props: React.LiHTMLAttributes<HTMLLIElement>) => <li className="text-slate-700" {...props} />,
-  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p className="text-slate-700" {...props} />,
+  strong: ({ className, ...props }) => (
+    <strong className={clsx('font-semibold text-slate-900', className)} {...props} />
+  ),
+  em: ({ className, ...props }) => (
+    <em className={clsx('text-slate-800', className)} {...props} />
+  ),
+  ul: ({ className, ...props }) => (
+    <ul
+      className={clsx(
+        'mt-4 list-disc space-y-2 pl-5 text-slate-700 marker:text-slate-400 first:mt-0',
+        className
+      )}
+      {...props}
+    />
+  ),
+  ol: ({ className, ...props }) => (
+    <ol
+      className={clsx(
+        'mt-4 list-decimal space-y-2 pl-5 text-slate-700 marker:text-slate-400 first:mt-0',
+        className
+      )}
+      {...props}
+    />
+  ),
+  li: ({ className, ...props }) => (
+    <li className={clsx('leading-relaxed text-slate-700', className)} {...props} />
+  ),
+  a: ({ className, ...props }) => (
+    <a
+      className={clsx(
+        'font-semibold text-sky-700 underline underline-offset-4 transition-colors hover:text-sky-800',
+        className
+      )}
+      {...props}
+    />
+  ),
+  hr: (props) => <hr className="my-6 border-slate-200" {...props} />,
 };
 
 export function TourContent({ description, galleryImages }: TourContentProps) {
@@ -31,7 +92,7 @@ export function TourContent({ description, galleryImages }: TourContentProps) {
     <div className="space-y-8">
       <div className="rounded-xl border border-slate-100 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-xl font-bold text-slate-900">О туре</h2>
-        <div className="prose prose-slate max-w-none text-slate-700">
+        <div className="space-y-4 text-slate-700">
           {trimmedDescription ? (
             <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
               {trimmedDescription}
