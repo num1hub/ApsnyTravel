@@ -6,6 +6,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Loader2, CheckCircle } from 'lucide-react';
+import { submitBookingRequest } from '../../lib/booking';
 
 const bookingSchema = z.object({
   client_name: z.string().min(2, 'Имя должно содержать минимум 2 символа'),
@@ -25,6 +26,7 @@ interface BookingFormProps {
 export function BookingForm({ tourTitle }: BookingFormProps) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -40,11 +42,18 @@ export function BookingForm({ tourTitle }: BookingFormProps) {
 
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
-    // Simulate API call
-    console.log('Booking submitted:', { ...data, tour: tourTitle });
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    setErrorMessage(null);
+
+    try {
+      await submitBookingRequest({ ...data, tourTitle });
+      setIsSuccess(true);
+    } catch (error) {
+      const message = (error as Error)?.message || 'Не удалось отправить заявку. Попробуйте снова.';
+      console.error('Booking submission failed:', error);
+      setErrorMessage(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {
@@ -159,10 +168,16 @@ export function BookingForm({ tourTitle }: BookingFormProps) {
           'Забронировать тур'
         )}
       </Button>
-      
+
       <p className="text-center text-xs text-slate-500 mt-2">
         Оплата не требуется сейчас. Мы свяжемся для подтверждения.
       </p>
+
+      {errorMessage && (
+        <p className="text-center text-xs text-red-500" role="alert">
+          {errorMessage}
+        </p>
+      )}
     </form>
   );
 }
