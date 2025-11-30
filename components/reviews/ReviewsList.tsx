@@ -1,5 +1,5 @@
 import React from 'react';
-import { Review } from '@/constants';
+import { Review } from '@/types';
 import { ReviewCard } from './ReviewCard';
 
 interface ReviewsListProps {

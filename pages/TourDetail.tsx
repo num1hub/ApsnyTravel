@@ -4,13 +4,13 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Tag, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { REGIONS_LABELS, Review } from '@/constants';
+import { REGIONS_LABELS } from '@/constants';
 import { fetchReviewsByTourId, fetchTourBySlug } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 import { BookingForm } from '@/components/booking/BookingForm';
 import { Button } from '@/components/ui/button';
 import { CONTACT_LINKS } from '@/lib/contact';
-import { Tour } from '@/types';
+import { Review, Tour } from '@/types';
 import { ReviewsList } from '@/components/reviews/ReviewsList';
 
 export function TourDetail() {

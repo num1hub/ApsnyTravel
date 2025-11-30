@@ -1,13 +1,4 @@
-import { Tour, TourRegion, TourType, TourDifficulty } from './types';
-
-export interface Review {
-  id: string;
-  tourId: string;
-  author: string;
-  rating: number;
-  date: string;
-  comment: string;
-}
+import { Tour, TourRegion, TourType, TourDifficulty, Review } from './types';
 
 export const REVIEWS: Review[] = [
   {

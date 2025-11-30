@@ -1,20 +1,35 @@
 import React, { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { TourCard } from '../components/tours/TourCard';
-import { TOURS, REGIONS_LABELS, TYPES_LABELS } from '../constants';
-import { TourRegion, TourType } from '../types';
+import { REGIONS_LABELS, TYPES_LABELS } from '../constants';
+import { fetchTours } from '../lib/api';
+import { Tour, TourRegion, TourType } from '../types';
 import { Button } from '../components/ui/button';
+import { Loader2 } from 'lucide-react';
 
 export function Catalog() {
   const [selectedRegion, setSelectedRegion] = useState<TourRegion | 'all'>('all');
   const [selectedType, setSelectedType] = useState<TourType | 'all'>('all');
 
+  const {
+    data: tours = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery<Tour[]>({
+    queryKey: ['tours'],
+    queryFn: fetchTours,
+    staleTime: 5 * 60 * 1000,
+  });
+
   const filteredTours = useMemo(() => {
-    return TOURS.filter((tour) => {
+    return tours.filter((tour) => {
       const regionMatch = selectedRegion === 'all' || tour.region === selectedRegion;
       const typeMatch = selectedType === 'all' || tour.type === selectedType;
       return regionMatch && typeMatch;
     });
-  }, [selectedRegion, selectedType]);
+  }, [selectedRegion, selectedType, tours]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -45,8 +60,8 @@ export function Catalog() {
         </select>
         
         {(selectedRegion !== 'all' || selectedType !== 'all') && (
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => { setSelectedRegion('all'); setSelectedType('all'); }}
             className="sm:w-auto w-full"
           >
@@ -55,20 +70,42 @@ export function Catalog() {
         )}
       </div>
 
-      {/* Grid */}
-      {filteredTours.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTours.map((tour) => (
-            <TourCard key={tour.id} tour={tour} />
-          ))}
+      {isLoading && (
+        <div className="flex items-center gap-2 text-slate-600">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span>Загружаем туры...</span>
         </div>
-      ) : (
-        <div className="text-center py-20">
-          <p className="text-lg text-slate-500">Туров по выбранным критериям не найдено.</p>
-          <Button variant="link" onClick={() => { setSelectedRegion('all'); setSelectedType('all'); }}>
-            Показать все туры
-          </Button>
+      )}
+
+      {isError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div className="flex items-start justify-between gap-3">
+            <p>{(error as Error)?.message || 'Не удалось загрузить туры. Попробуйте обновить страницу.'}</p>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>
+              Повторить
+            </Button>
+          </div>
         </div>
+      )}
+
+      {!isLoading && !isError && (
+        <>
+          {/* Grid */}
+          {filteredTours.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTours.map((tour) => (
+                <TourCard key={tour.id} tour={tour} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-lg text-slate-500">Туров по выбранным критериям не найдено.</p>
+              <Button variant="link" onClick={() => { setSelectedRegion('all'); setSelectedType('all'); }}>
+                Показать все туры
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
