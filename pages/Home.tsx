@@ -1,12 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Star, Users } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowRight, Loader2, ShieldCheck, Star, Users } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { TourCard } from '../components/tours/TourCard';
-import { TOURS } from '../constants';
+import { fetchTours } from '../lib/api';
+import { Tour } from '../types';
 
 export function Home() {
-  const featuredTours = TOURS.slice(0, 3);
+  const {
+    data: tours,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Tour[]>({
+    queryKey: ['tours'],
+    queryFn: fetchTours,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const featuredTours = (tours ?? []).slice(0, 3);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -81,12 +94,33 @@ export function Home() {
               Смотреть все <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredTours.map((tour) => (
-              <TourCard key={tour.id} tour={tour} />
-            ))}
-          </div>
+
+          {isLoading && (
+            <div className="flex items-center gap-2 text-slate-600">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Загружаем подборку...</span>
+            </div>
+          )}
+
+          {isError && (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              {(error as Error)?.message || 'Не удалось загрузить туры. Попробуйте позже.'}
+            </div>
+          )}
+
+          {!isLoading && !isError && (
+            featuredTours.length ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredTours.map((tour) => (
+                  <TourCard key={tour.id} tour={tour} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-slate-600">
+                Туры временно недоступны. Загляните позже или свяжитесь с нами напрямую.
+              </div>
+            )
+          )}
 
           <div className="mt-8 text-center sm:hidden">
             <Button asChild variant="outline" className="w-full">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Star } from 'lucide-react';
-import { Review } from '@/constants';
+import { Review } from '@/types';
 import { cn } from '@/lib/utils';
 
 interface ReviewCardProps {

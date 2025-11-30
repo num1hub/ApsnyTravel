@@ -34,6 +34,15 @@ export interface Tour {
   is_active: boolean;
 }
 
+export interface Review {
+  id: string;
+  tourId: string;
+  author: string;
+  rating: number;
+  date: string;
+  comment: string;
+}
+
 export interface BookingFormData {
   client_name: string;
   client_contact: string;

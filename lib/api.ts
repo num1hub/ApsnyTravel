@@ -1,5 +1,5 @@
-import { REVIEWS, Review } from '../constants';
-import { Tour } from '../types';
+import { REVIEWS, TOURS } from '../constants';
+import { Review, Tour } from '../types';
 
 export class ApiError extends Error {
   status?: number;
@@ -13,43 +13,34 @@ export class ApiError extends Error {
   }
 }
 
-const API_BASE_URL = 'https://api.apsnytravel.com/v1';
-const REQUEST_TIMEOUT_MS = 10000;
+const MIN_DELAY_MS = 500;
+const MAX_DELAY_MS = 900;
+
+async function simulateNetworkDelay() {
+  const delay = MIN_DELAY_MS + Math.random() * (MAX_DELAY_MS - MIN_DELAY_MS);
+  await new Promise((resolve) => setTimeout(resolve, delay));
+}
+
+export async function fetchTours(): Promise<Tour[]> {
+  await simulateNetworkDelay();
+
+  return [...TOURS].filter((tour) => tour.is_active);
+}
 
 export async function fetchTourBySlug(slug: string): Promise<Tour> {
   if (!slug) {
     throw new ApiError('Missing tour slug');
   }
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  await simulateNetworkDelay();
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/tours/${encodeURIComponent(slug)}`, {
-      method: 'GET',
-      signal: controller.signal,
-    });
+  const tour = TOURS.find((item) => item.slug === slug && item.is_active);
 
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => undefined);
-      throw new ApiError(errorText || 'Failed to load tour', response.status);
-    }
-
-    const data = (await response.json()) as Tour;
-    return data;
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new ApiError('Request timed out', 408);
-    }
-
-    if (error instanceof ApiError) {
-      throw error;
-    }
-
-    throw new ApiError((error as Error)?.message || 'Unexpected error occurred');
-  } finally {
-    clearTimeout(timeoutId);
+  if (!tour) {
+    throw new ApiError('Тур не найден', 404);
   }
+
+  return tour;
 }
 
 export async function fetchReviewsByTourId(tourId: string): Promise<Review[]> {
