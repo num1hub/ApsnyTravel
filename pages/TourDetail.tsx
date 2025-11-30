@@ -1,19 +1,40 @@
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Clock, MapPin, Tag } from 'lucide-react';
-import { TOURS, REGIONS_LABELS } from '../constants';
+import { ArrowLeft, Clock, Tag, Loader2 } from 'lucide-react';
+import { REGIONS_LABELS } from '../constants';
+import { fetchTourBySlug } from '../lib/api';
 import { formatPrice } from '../lib/utils';
 import { BookingForm } from '../components/booking/BookingForm';
 import { Button } from '../components/ui/button';
+import { Tour } from '../types';
 
 export function TourDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const tour = TOURS.find((t) => t.slug === slug);
 
-  if (!tour) {
+  const { data: tour, isLoading, isError, error } = useQuery<Tour>({
+    queryKey: ['tour', slug],
+    queryFn: () => fetchTourBySlug(slug ?? ''),
+    enabled: Boolean(slug),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-20 text-center text-slate-600 flex items-center justify-center gap-3">
+        <Loader2 className="h-5 w-5 animate-spin" />
+        <span>Загружаем тур...</span>
+      </div>
+    );
+  }
+
+  if (isError || !tour) {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
         <h1 className="text-2xl font-bold text-slate-900 mb-4">Тур не найден</h1>
+        {isError && (
+          <p className="mb-4 text-sm text-red-500">{(error as Error)?.message ?? 'Ошибка загрузки данных'}</p>
+        )}
         <Button asChild>
           <Link to="/catalog">Вернуться в каталог</Link>
         </Button>
