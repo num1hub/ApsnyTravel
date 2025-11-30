@@ -1,5 +1,3 @@
-import type { BookingFormValues } from './lib/booking';
-
 export enum TourRegion {
   ABKHAZIA = 'abkhazia',
   SOCHI = 'sochi',
@@ -44,5 +42,3 @@ export interface Review {
   date: string;
   comment: string;
 }
-
-export type BookingFormData = BookingFormValues;
