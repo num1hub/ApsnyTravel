@@ -1,0 +1,44 @@
+export enum TourRegion {
+  ABKHAZIA = 'abkhazia',
+  SOCHI = 'sochi',
+  KRASNAYA_POLYANA = 'krasnaya_polyana',
+  OLYMPIC_PARK = 'olympic_park',
+}
+
+export enum TourType {
+  TOUR = 'tour',
+  EXCURSION = 'excursion',
+}
+
+export enum TourDifficulty {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+}
+
+export interface Tour {
+  id: string;
+  slug: string;
+  title: string;
+  short_desc: string;
+  description_md: string; // We will use simple text for MVP display
+  region: TourRegion;
+  type: TourType;
+  difficulty: TourDifficulty;
+  duration_hours: number;
+  price_from: number;
+  currency: string;
+  cover_image: string;
+  gallery_images: string[];
+  tags: string[];
+  is_active: boolean;
+}
+
+export interface BookingFormData {
+  client_name: string;
+  client_contact: string;
+  desired_date?: string;
+  pax: number;
+  client_message?: string;
+  consent: boolean;
+}

@@ -1,0 +1,5 @@
+{
+  "name": "ApsnyTravel",
+  "description": "A tour booking platform for Abkhazia and Sochi, featuring curated tours, detailed itineraries, and instant booking requests via Telegram integration (simulated).",
+  "requestFramePermissions": []
+}
