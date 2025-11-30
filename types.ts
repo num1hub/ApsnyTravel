@@ -1,3 +1,5 @@
+import type { BookingFormValues } from './lib/booking';
+
 export enum TourRegion {
   ABKHAZIA = 'abkhazia',
   SOCHI = 'sochi',
@@ -21,7 +23,7 @@ export interface Tour {
   slug: string;
   title: string;
   short_desc: string;
-  description_md: string; // We will use simple text for MVP display
+  description_md: string;
   region: TourRegion;
   type: TourType;
   difficulty: TourDifficulty;
@@ -43,11 +45,4 @@ export interface Review {
   comment: string;
 }
 
-export interface BookingFormData {
-  client_name: string;
-  client_contact: string;
-  desired_date?: string;
-  pax: number;
-  client_message?: string;
-  consent: boolean;
-}
+export type BookingFormData = BookingFormValues;

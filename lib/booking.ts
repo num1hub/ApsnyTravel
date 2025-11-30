@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const INTERNATIONAL_PHONE_REGEX = /^\+?[1-9]\d{7,14}$/;
+const WAIT_FALLBACK_MS = 1200;
 
 const futureDateSchema = z
   .string()
@@ -31,8 +32,6 @@ export const bookingFormSchema = bookingPayloadSchema.omit({ tourTitle: true });
 export type BookingPayload = z.infer<typeof bookingPayloadSchema>;
 export type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
-const WAIT_FALLBACK_MS = 1200;
-
 export class BookingSubmissionError extends Error {
   status?: number;
   constructor(message: string, status?: number) {
@@ -54,6 +53,11 @@ export async function submitBookingRequest(payload: BookingPayload): Promise<Boo
   const endpoint = import.meta.env.VITE_BOOKING_ENDPOINT;
 
   if (!endpoint) {
+    if (import.meta.env.PROD) {
+      throw new BookingSubmissionError('Не настроен endpoint для бронирования', 500);
+    }
+
+    console.warn('VITE_BOOKING_ENDPOINT отсутствует. Возвращаем мок-ответ.');
     await new Promise((resolve) => setTimeout(resolve, WAIT_FALLBACK_MS));
     return { ok: true, mocked: true };
   }
