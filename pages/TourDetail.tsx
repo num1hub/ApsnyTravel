@@ -2,6 +2,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Tag, Loader2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { REGIONS_LABELS } from '../constants';
 import { fetchTourBySlug } from '../lib/api';
 import { formatPrice } from '../lib/utils';
@@ -87,23 +89,30 @@ export function TourDetail() {
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
               <h2 className="text-xl font-bold text-slate-900 mb-4">О туре</h2>
-              {/* Rendering simplified Markdown content as plain text blocks for MVP */}
-              <div className="prose prose-slate max-w-none text-slate-600 whitespace-pre-line">
-                {(tour.description_md?.split('##').map((section) => section.trim()).filter(Boolean) ?? []).map(
-                  (section, idx) => {
-                    const [title, ...bodyLines] = section.split('\n').map((line) => line.trim());
-                    const body = bodyLines.join('\n').trim();
-
-                    return (
-                      <div key={idx} className="mb-6 last:mb-0">
-                        <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>
-                        {body ? <p>{body}</p> : null}
-                      </div>
-                    );
-                  },
-                )}
-
-                {(!tour.description_md || !tour.description_md.trim()) && (
+              <div className="prose prose-slate max-w-none text-slate-700">
+                {tour.description_md?.trim() ? (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h2: ({ node, ...props }) => (
+                        <h2 className="text-xl font-bold text-slate-900" {...props} />
+                      ),
+                      h3: ({ node, ...props }) => (
+                        <h3 className="text-lg font-bold text-slate-900" {...props} />
+                      ),
+                      ul: ({ node, ...props }) => (
+                        <ul className="list-disc pl-6 space-y-2" {...props} />
+                      ),
+                      ol: ({ node, ...props }) => (
+                        <ol className="list-decimal pl-6 space-y-2" {...props} />
+                      ),
+                      li: ({ node, ...props }) => <li className="text-slate-700" {...props} />,
+                      p: ({ node, ...props }) => <p className="text-slate-700" {...props} />,
+                    }}
+                  >
+                    {tour.description_md}
+                  </ReactMarkdown>
+                ) : (
                   <p className="text-slate-500">Описание скоро появится.</p>
                 )}
               </div>
