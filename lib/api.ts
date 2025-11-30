@@ -12,8 +12,16 @@ export class ApiError extends Error {
     this.details = details;
   }
 }
+/**
+ * Returns the API base URL if configured via VITE_API_URL.
+ * Trims whitespace and normalizes empty strings to undefined.
+ */
+function getApiBaseUrl() {
+  const url = import.meta.env.VITE_API_URL?.trim();
+  return url && url.length > 0 ? url : undefined;
+}
 
-const API_BASE_URL = import.meta.env.VITE_API_URL?.trim();
+const API_BASE_URL = getApiBaseUrl();
 const IS_REMOTE_API_ENABLED = Boolean(API_BASE_URL);
 const IS_PRODUCTION_BUILD = import.meta.env.PROD;
 
@@ -31,13 +39,13 @@ async function maybeDelay() {
   await new Promise((resolve) => setTimeout(resolve, delay));
 }
 
-async function safeParseJson(response: Response) {
-  try {
-    return await response.json();
-  } catch (error) {
-    return undefined;
+  async function safeParseJson(response: Response) {
+    try {
+      return await response.json();
+    } catch {
+      return undefined;
+    }
   }
-}
 
 async function request<T>(path: string): Promise<T> {
   if (!API_BASE_URL) {
@@ -73,6 +81,12 @@ function filterActiveTours(tours: Tour[]) {
   return tours.filter((tour) => tour.is_active);
 }
 
+/**
+ * Fetches available tours.
+ *
+ * When VITE_API_URL is provided, this performs a GET /tours request.
+ * In mock mode, it returns the locally defined TOURS after a short delay and filters out inactive entries.
+ */
 export async function fetchTours(): Promise<Tour[]> {
   if (IS_REMOTE_API_ENABLED) {
     const tours = await request<Tour[]>('/tours');
@@ -84,6 +98,12 @@ export async function fetchTours(): Promise<Tour[]> {
   return filterActiveTours([...TOURS]);
 }
 
+/**
+ * Fetches a single tour by slug.
+ *
+ * Remote mode: GET /tours/:slug, throws ApiError 404 if inactive or missing.
+ * Mock mode: reads from TOURS with a short delay.
+ */
 export async function fetchTourBySlug(slug: string): Promise<Tour> {
   if (!slug) {
     throw new ApiError('Missing tour slug');
@@ -110,6 +130,12 @@ export async function fetchTourBySlug(slug: string): Promise<Tour> {
   return tour;
 }
 
+/**
+ * Fetches reviews for the given tour id.
+ *
+ * Remote mode: GET /reviews?tourId=ID.
+ * Mock mode: filters REVIEWS and sorts by date desc.
+ */
 export async function fetchReviewsByTourId(tourId: string): Promise<Review[]> {
   if (!tourId) {
     throw new ApiError('Missing tour id');

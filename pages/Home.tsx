@@ -5,9 +5,18 @@ import { ArrowRight, Loader2, ShieldCheck, Star, Users } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { TourCard } from '../components/tours/TourCard';
 import { fetchTours } from '../lib/api';
+import { usePageMeta } from '../lib/seo';
 import { Tour } from '../types';
+import { branding } from '@/lib/branding';
 
 export function Home() {
+  usePageMeta({
+    title: 'Главная',
+    description: `${branding.siteTagline}. Авторские маршруты по ${branding.regionTagline} с гидом ${branding.guideName}.`,
+    canonicalPath: '/',
+    openGraph: { type: 'website' },
+  });
+
   const {
     data: tours,
     isLoading,

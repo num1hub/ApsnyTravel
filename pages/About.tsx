@@ -1,6 +1,15 @@
 import React from 'react';
+import { usePageMeta } from '../lib/seo';
+import { branding } from '@/lib/branding';
 
 export function About() {
+  usePageMeta({
+    title: 'О гиде',
+    description: `${branding.guideName} — частный гид по ${branding.regionTagline}. ${branding.siteTagline}.`,
+    canonicalPath: '/about',
+    openGraph: { type: 'profile' },
+  });
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-3xl">
       <h1 className="text-3xl font-bold text-slate-900 mb-6">О гиде</h1>

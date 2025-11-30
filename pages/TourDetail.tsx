@@ -9,6 +9,8 @@ import { TourHero } from '@/components/tours/TourHero';
 import { TourContent } from '@/components/tours/TourContent';
 import { ReviewsPanel } from '@/components/tours/ReviewsPanel';
 import { BookingSidebar } from '@/components/tours/BookingSidebar';
+import { usePageMeta } from '@/lib/seo';
+import { branding } from '@/lib/branding';
 
 export function TourDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -17,6 +19,17 @@ export function TourDetail() {
     queryFn: () => fetchTourBySlug(slug ?? ''),
     enabled: Boolean(slug),
     staleTime: 5 * 60 * 1000,
+  });
+
+  usePageMeta({
+    title: tour?.title ?? 'Тур',
+    description:
+      tour?.short_desc ?? `${branding.siteTagline}. Детали маршрута доступны после загрузки данных тура.`,
+    canonicalPath: tour ? `/tours/${tour.slug}` : '/tours',
+    openGraph: {
+      type: 'article',
+      image: tour?.cover_image,
+    },
   });
 
   if (isLoading) {

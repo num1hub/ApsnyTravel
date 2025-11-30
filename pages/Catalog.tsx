@@ -3,11 +3,20 @@ import { useQuery } from '@tanstack/react-query';
 import { TourCard } from '../components/tours/TourCard';
 import { REGIONS_LABELS, TYPES_LABELS } from '../constants';
 import { fetchTours } from '../lib/api';
+import { usePageMeta } from '../lib/seo';
 import { Tour, TourRegion, TourType } from '../types';
 import { Button } from '../components/ui/button';
 import { Loader2 } from 'lucide-react';
+import { branding } from '@/lib/branding';
 
 export function Catalog() {
+  usePageMeta({
+    title: 'Каталог туров',
+    description: `Каталог авторских туров по ${branding.regionTagline}. Подборка маршрутов с прозрачными ценами и отзывами гостей.`,
+    canonicalPath: '/catalog',
+    openGraph: { type: 'website' },
+  });
+
   const [selectedRegion, setSelectedRegion] = useState<TourRegion | 'all'>('all');
   const [selectedType, setSelectedType] = useState<TourType | 'all'>('all');
 

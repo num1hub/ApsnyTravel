@@ -2,8 +2,17 @@ import React from 'react';
 import { MessageCircle, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CONTACT_LINKS } from '@/lib/contact';
+import { branding } from '@/lib/branding';
+import { usePageMeta } from '@/lib/seo';
 
 export function Contacts() {
+  usePageMeta({
+    title: 'Контакты',
+    description: `${branding.siteTagline}. Свяжитесь со мной в мессенджерах или по телефону — отвечаю быстро.`,
+    canonicalPath: '/contacts',
+    openGraph: { type: 'website' },
+  });
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl text-center">
       <h1 className="text-3xl font-bold text-slate-900 mb-6">Связаться со мной</h1>
@@ -40,7 +49,8 @@ export function Contacts() {
           <a href={CONTACT_LINKS.phoneHref} className="text-2xl font-bold text-slate-900 hover:text-teal-600">
             {CONTACT_LINKS.phoneDisplay}
           </a>
-          <p className="text-sm text-slate-400 mt-2">Звонки с 9:00 до 21:00</p>
+          <p className="text-sm text-slate-400 mt-2">{branding.contact.availabilityNote}</p>
+          <p className="text-sm text-slate-500 mt-4">Email: {CONTACT_LINKS.email}</p>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mountain } from 'lucide-react';
 import { CONTACT_LINKS } from '@/lib/contact';
+import { branding } from '@/lib/branding';
 
 export function Footer() {
   return (
@@ -11,12 +12,9 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 font-bold text-xl text-white mb-4">
               <Mountain className="h-6 w-6" />
-              <span>ApsnyTravel</span>
+              <span>{branding.brandName}</span>
             </div>
-            <p className="text-sm leading-relaxed max-w-xs">
-              Индивидуальные туры по Абхазии и Сочи с опытным гидом Александром.
-              Более 10 лет опыта, комфортный транспорт и честные цены.
-            </p>
+            <p className="text-sm leading-relaxed max-w-xs">{branding.siteTagline}</p>
           </div>
           
           <div>
@@ -50,6 +48,11 @@ export function Footer() {
                   className="hover:text-white transition-colors flex items-center gap-2"
                 >
                   WhatsApp
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${CONTACT_LINKS.email}`} className="hover:text-white transition-colors">
+                  {CONTACT_LINKS.email}
                 </a>
               </li>
               <li>{CONTACT_LINKS.phoneDisplay}</li>

@@ -1,6 +1,15 @@
 import React from 'react';
+import { usePageMeta } from '../lib/seo';
+import { branding } from '@/lib/branding';
 
 export function FAQ() {
+  usePageMeta({
+    title: 'Частые вопросы',
+    description: `Ответы на типичные вопросы о турах ${branding.brandName}: документы, оплата, безопасность и погода.`,
+    canonicalPath: '/faq',
+    openGraph: { type: 'website' },
+  });
+
   const faqs = [
     {
       q: "Нужен ли загранпаспорт для поездки в Абхазию?",
