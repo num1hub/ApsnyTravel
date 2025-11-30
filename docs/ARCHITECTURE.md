@@ -5,7 +5,7 @@
 - UI components must consume tour data via `fetchTourBySlug` rather than importing `TOURS` directly (except for the catalog filter logic), preserving a clean abstraction line for future backend integration.
 
 ## Routing and page data flow
-- `App.tsx` uses `HashRouter` with routes for `/`, `/catalog`, `/tours/:slug`, `/about`, `/faq`, and `/contacts`. This is static-hosting friendly (e.g., GitHub Pages) because hash-based URLs do not require server rewrite rules.
+- `App.tsx` uses `BrowserRouter` with routes for `/`, `/catalog`, `/tours/:slug`, `/about`, `/faq`, and `/contacts`. Clean URLs are supported in production via SPA rewrites configured in `vercel.json`, so hash-based routing is no longer required.
 - `pages/TourDetail.tsx` (via `useQuery`) calls `fetchTourBySlug`, populates the page, and passes the tour title into `components/booking/BookingForm.tsx` for booking submissions.
 
 ### ASCII data flow
@@ -33,12 +33,12 @@ App.tsx
 - Install: `npm install`
 - Develop: `npm run dev` (Vite serves on port 3000 per `vite.config.ts`)
 - Build: `npm run build` (outputs static bundle to `dist/`)
-- Hash-based routing (`HashRouter` in `App.tsx`) avoids server rewrite requirements on static hosts but is called out as an SEO limitation that should be revisited before launch.
+- Browser-based routing depends on SPA rewrites (see `vercel.json`) so clean URLs resolve correctly without hash fragments; ensure equivalent rewrites on any alternate host.
 
 ## Scalability checkpoints
 - Replace the mock lookup in `lib/api.ts` with a real `fetch` to a backend endpoint while keeping the same `fetchTourBySlug` signature.
 - Centralize hardcoded contact/branding strings (e.g., in `components/layout/Footer.tsx` and `pages/Contacts.tsx`) into a shared config for reuse/localization.
-- For SEO, plan migration from `HashRouter` to `BrowserRouter` with proper server rewrites, or consider SSR/SSG (e.g., Next.js).
+- For SEO, evolve from SPA-only `BrowserRouter` toward SSR/SSG (e.g., Next.js) while retaining rewrite rules for client-side navigation fallbacks.
 
 ## Quality and security protocols
 - Favor the shared types in `types.ts` to avoid `any` and keep data boundaries well-typed.
@@ -47,5 +47,5 @@ App.tsx
 
 ## Scaling roadmap
 1. **CMS integration:** Move the tour catalog out of `constants.ts` into a headless CMS (e.g., Strapi/Contentful) while keeping the `fetchTourBySlug` contract stable.
-2. **SEO upgrade:** Migrate from `HashRouter` to `BrowserRouter` (with server rewrites) or an SSR/SSG solution such as Next.js for crawlable pages and meta handling.
+2. **SEO upgrade:** Layer SSR/SSG (e.g., Next.js) on top of the current `BrowserRouter`-compatible routes to produce crawlable HTML and managed meta tags.
 3. **Content governance:** Externalize phone numbers and other contact strings from `pages/Contacts.tsx` (and similar surfaces) into a global configuration object to simplify localization and rebranding.
