@@ -5,9 +5,12 @@ import { ArrowRight, Loader2, ShieldCheck, Star, Users } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { TourCard } from '../components/tours/TourCard';
 import { fetchTours } from '../lib/api';
+import { usePageTitle } from '../lib/seo';
 import { Tour } from '../types';
 
 export function Home() {
+  usePageTitle('Главная');
+
   const {
     data: tours,
     isLoading,

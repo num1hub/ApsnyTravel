@@ -2,8 +2,11 @@ import React from 'react';
 import { MessageCircle, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CONTACT_LINKS } from '@/lib/contact';
+import { usePageTitle } from '@/lib/seo';
 
 export function Contacts() {
+  usePageTitle('Контакты');
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl text-center">
       <h1 className="text-3xl font-bold text-slate-900 mb-6">Связаться со мной</h1>
