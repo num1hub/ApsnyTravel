@@ -1,25 +1,52 @@
-import { TOURS } from '../constants';
 import { Tour } from '../types';
 
-/**
- * Simulates fetching a tour from a backend while staying entirely client-side.
- * Adds a small artificial delay so loading states can be exercised.
- */
-export function fetchTourBySlug(slug: string): Promise<Tour> {
+export class ApiError extends Error {
+  status?: number;
+  details?: unknown;
+
+  constructor(message: string, status?: number, details?: unknown) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.details = details;
+  }
+}
+
+const API_BASE_URL = 'https://api.apsnytravel.com/v1';
+const REQUEST_TIMEOUT_MS = 10000;
+
+export async function fetchTourBySlug(slug: string): Promise<Tour> {
   if (!slug) {
-    return Promise.reject(new Error('Missing tour slug'));
+    throw new ApiError('Missing tour slug');
   }
 
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const tour = TOURS.find((item) => item.slug === slug);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-      if (!tour) {
-        reject(Object.assign(new Error('Tour not found'), { status: 404 }));
-        return;
-      }
+  try {
+    const response = await fetch(`${API_BASE_URL}/tours/${encodeURIComponent(slug)}`, {
+      method: 'GET',
+      signal: controller.signal,
+    });
 
-      resolve(tour);
-    }, 600);
-  });
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => undefined);
+      throw new ApiError(errorText || 'Failed to load tour', response.status);
+    }
+
+    const data = (await response.json()) as Tour;
+    return data;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new ApiError('Request timed out', 408);
+    }
+
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
+    throw new ApiError((error as Error)?.message || 'Unexpected error occurred');
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }

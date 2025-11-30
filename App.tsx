@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { Home } from './pages/Home';
@@ -11,7 +11,7 @@ import { Contacts } from './pages/Contacts';
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-900">
         <Header />
         <main className="flex-1">
@@ -26,7 +26,7 @@ function App() {
         </main>
         <Footer />
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
