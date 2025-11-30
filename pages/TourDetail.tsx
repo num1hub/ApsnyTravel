@@ -4,13 +4,14 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Tag, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { REGIONS_LABELS } from '@/constants';
-import { fetchTourBySlug } from '@/lib/api';
+import { REGIONS_LABELS, Review } from '@/constants';
+import { fetchReviewsByTourId, fetchTourBySlug } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 import { BookingForm } from '@/components/booking/BookingForm';
 import { Button } from '@/components/ui/button';
 import { CONTACT_LINKS } from '@/lib/contact';
 import { Tour } from '@/types';
+import { ReviewsList } from '@/components/reviews/ReviewsList';
 
 export function TourDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -19,6 +20,18 @@ export function TourDetail() {
     queryKey: ['tour', slug],
     queryFn: () => fetchTourBySlug(slug ?? ''),
     enabled: Boolean(slug),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const {
+    data: reviews,
+    isLoading: isReviewsLoading,
+    isError: isReviewsError,
+    error: reviewsError,
+  } = useQuery<Review[]>({
+    queryKey: ['reviews', tour?.id],
+    queryFn: () => fetchReviewsByTourId(tour?.id ?? ''),
+    enabled: Boolean(tour?.id),
     staleTime: 5 * 60 * 1000,
   });
 
@@ -132,6 +145,28 @@ export function TourDetail() {
                   />
                 ))}
               </div>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-slate-900">Отзывы путешественников</h2>
+                <span className="text-sm text-slate-500">{reviews?.length ?? 0}</span>
+              </div>
+
+              {isReviewsLoading && (
+                <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Загружаем отзывы...</span>
+                </div>
+              )}
+
+              {isReviewsError && (
+                <p className="text-sm text-red-500">
+                  {(reviewsError as Error)?.message || 'Не удалось загрузить отзывы. Попробуйте позже.'}
+                </p>
+              )}
+
+              {!isReviewsLoading && !isReviewsError && reviews && <ReviewsList reviews={reviews} />}
             </div>
           </div>
 

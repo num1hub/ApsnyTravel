@@ -1,5 +1,51 @@
 import { Tour, TourRegion, TourType, TourDifficulty } from './types';
 
+export interface Review {
+  id: string;
+  tourId: string;
+  author: string;
+  rating: number;
+  date: string;
+  comment: string;
+}
+
+export const REVIEWS: Review[] = [
+  {
+    id: 'r1',
+    tourId: '1',
+    author: 'Марина К.',
+    rating: 5,
+    date: '2024-02-10',
+    comment:
+      'Поездка на Рицу превзошла ожидания! Водитель внимательный, гид делился историями. Обязательно поедем снова летом.',
+  },
+  {
+    id: 'r2',
+    tourId: '1',
+    author: 'Илья П.',
+    rating: 4,
+    date: '2024-03-02',
+    comment: 'Красивейшие виды, но дорога длинная. Зато остановки у Голубого озера и Юпшарского каньона того стоят.',
+  },
+  {
+    id: 'r3',
+    tourId: '2',
+    author: 'Светлана Р.',
+    rating: 5,
+    date: '2024-01-18',
+    comment:
+      'Гагра шикарна зимой, мало людей и мягкий климат. Понравился рассказ про историю Пицунды и органный концерт.',
+  },
+  {
+    id: 'r4',
+    tourId: '3',
+    author: 'Дмитрий Л.',
+    rating: 5,
+    date: '2024-04-22',
+    comment: 'Адреналин зашкаливал! Команда следила за безопасностью, а виды с моста просто космос.',
+  },
+];
+
 export const TOURS: Tour[] = [
   {
     id: '1',
