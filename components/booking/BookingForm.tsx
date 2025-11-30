@@ -1,23 +1,11 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Loader2, CheckCircle } from 'lucide-react';
-import { submitBookingRequest } from '../../lib/booking';
-
-const bookingSchema = z.object({
-  client_name: z.string().min(2, 'Имя должно содержать минимум 2 символа'),
-  client_contact: z.string().min(5, 'Введите корректный телефон или Telegram'),
-  desired_date: z.string().optional(),
-  pax: z.number().min(1, 'Минимум 1 человек').max(20, 'Максимум 20 человек'),
-  client_message: z.string().max(500, 'Сообщение слишком длинное').optional(),
-  consent: z.boolean().refine((val) => val === true, 'Необходимо согласие'),
-});
-
-type BookingFormData = z.infer<typeof bookingSchema>;
+import { bookingFormSchema, BookingFormValues, submitBookingRequest } from '../../lib/booking';
 
 interface BookingFormProps {
   tourTitle: string;
@@ -32,15 +20,15 @@ export function BookingForm({ tourTitle }: BookingFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<BookingFormData>({
-    resolver: zodResolver(bookingSchema),
+  } = useForm<BookingFormValues>({
+    resolver: zodResolver(bookingFormSchema),
     defaultValues: {
       pax: 1,
       consent: false,
     },
   });
 
-  const onSubmit = async (data: BookingFormData) => {
+  const onSubmit = async (data: BookingFormValues) => {
     setIsSubmitting(true);
     setErrorMessage(null);
 
@@ -87,11 +75,11 @@ export function BookingForm({ tourTitle }: BookingFormProps) {
 
       <div>
         <label htmlFor="client_contact" className="mb-1 block text-sm font-medium text-slate-700">
-          Телефон или Telegram *
+          Телефон в международном формате *
         </label>
         <Input
           id="client_contact"
-          placeholder="+7 999 000-00-00 или @username"
+          placeholder="+7 999 0000000"
           {...register('client_contact')}
           className={errors.client_contact ? 'border-red-500' : ''}
         />
@@ -103,13 +91,17 @@ export function BookingForm({ tourTitle }: BookingFormProps) {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="desired_date" className="mb-1 block text-sm font-medium text-slate-700">
-            Дата (необязательно)
+            Дата (будущее)
           </label>
           <Input
             id="desired_date"
             type="date"
             {...register('desired_date')}
+            className={errors.desired_date ? 'border-red-500' : ''}
           />
+          {errors.desired_date && (
+            <p className="mt-1 text-xs text-red-500">{errors.desired_date.message}</p>
+          )}
         </div>
         <div>
           <label htmlFor="pax" className="mb-1 block text-sm font-medium text-slate-700">
