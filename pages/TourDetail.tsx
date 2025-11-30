@@ -9,7 +9,6 @@ import { TourHero } from '@/components/tours/TourHero';
 import { TourContent } from '@/components/tours/TourContent';
 import { ReviewsPanel } from '@/components/tours/ReviewsPanel';
 import { BookingSidebar } from '@/components/tours/BookingSidebar';
-import { usePageTitle } from '@/lib/seo';
 
 export function TourDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -19,8 +18,6 @@ export function TourDetail() {
     enabled: Boolean(slug),
     staleTime: 5 * 60 * 1000,
   });
-
-  usePageTitle(tour?.title ?? 'Тур');
 
   if (isLoading) {
     return (

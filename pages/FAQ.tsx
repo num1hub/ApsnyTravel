@@ -1,9 +1,6 @@
 import React from 'react';
-import { usePageTitle } from '../lib/seo';
 
 export function FAQ() {
-  usePageTitle('Частые вопросы');
-
   const faqs = [
     {
       q: "Нужен ли загранпаспорт для поездки в Абхазию?",

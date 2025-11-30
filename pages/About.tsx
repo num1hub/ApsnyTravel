@@ -1,9 +1,6 @@
 import React from 'react';
-import { usePageTitle } from '../lib/seo';
 
 export function About() {
-  usePageTitle('О гиде');
-
   return (
     <div className="container mx-auto px-4 py-12 max-w-3xl">
       <h1 className="text-3xl font-bold text-slate-900 mb-6">О гиде</h1>
