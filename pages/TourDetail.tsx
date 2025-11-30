@@ -4,12 +4,13 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Tag, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { REGIONS_LABELS } from '../constants';
-import { fetchTourBySlug } from '../lib/api';
-import { formatPrice } from '../lib/utils';
-import { BookingForm } from '../components/booking/BookingForm';
-import { Button } from '../components/ui/button';
-import { Tour } from '../types';
+import { REGIONS_LABELS } from '@/constants';
+import { fetchTourBySlug } from '@/lib/api';
+import { formatPrice } from '@/lib/utils';
+import { BookingForm } from '@/components/booking/BookingForm';
+import { Button } from '@/components/ui/button';
+import { CONTACT_LINKS } from '@/lib/contact';
+import { Tour } from '@/types';
 
 export function TourDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -153,11 +154,23 @@ export function TourDetail() {
               <div className="text-center">
                 <p className="text-sm text-slate-500 mb-3">Или напишите напрямую:</p>
                 <div className="flex justify-center gap-3">
-                  <Button variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50">
-                    Telegram
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
+                  >
+                    <a href={CONTACT_LINKS.telegramUrl} target="_blank" rel="noreferrer">
+                      Telegram
+                    </a>
                   </Button>
-                  <Button variant="outline" className="w-full text-green-600 border-green-200 hover:bg-green-50">
-                    WhatsApp
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full text-green-600 border-green-200 hover:bg-green-50"
+                  >
+                    <a href={CONTACT_LINKS.whatsappUrl} target="_blank" rel="noreferrer">
+                      WhatsApp
+                    </a>
                   </Button>
                 </div>
               </div>
