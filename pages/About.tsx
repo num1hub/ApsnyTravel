@@ -1,8 +1,13 @@
 import React from 'react';
-import { usePageTitle } from '../lib/seo';
+import { usePageMeta } from '../lib/seo';
 
 export function About() {
-  usePageTitle('О гиде');
+  usePageMeta({
+    title: 'О гиде',
+    description:
+      'Познакомьтесь с Александром — частным гидом по Абхазии и Сочи с 10-летним опытом. Узнайте подход к маршрутам и безопасностью гостей.',
+    path: '/about',
+  });
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-3xl">

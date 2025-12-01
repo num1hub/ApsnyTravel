@@ -2,7 +2,7 @@ import React from 'react';
 import { BookingForm } from '@/components/booking/BookingForm';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
-import { CONTACT_LINKS } from '@/lib/contact';
+import { branding } from '@/lib/branding';
 
 interface BookingSidebarProps {
   priceFrom: number;
@@ -31,7 +31,7 @@ export function BookingSidebar({ priceFrom, tourTitle }: BookingSidebarProps) {
               variant="outline"
               className="w-full border-blue-200 text-blue-600 hover:bg-blue-50"
             >
-              <a href={CONTACT_LINKS.telegramUrl} target="_blank" rel="noreferrer">
+              <a href={branding.contact.telegram} target="_blank" rel="noreferrer">
                 Telegram
               </a>
             </Button>
@@ -40,7 +40,7 @@ export function BookingSidebar({ priceFrom, tourTitle }: BookingSidebarProps) {
               variant="outline"
               className="w-full border-green-200 text-green-600 hover:bg-green-50"
             >
-              <a href={CONTACT_LINKS.whatsappUrl} target="_blank" rel="noreferrer">
+              <a href={branding.contact.whatsapp} target="_blank" rel="noreferrer">
                 WhatsApp
               </a>
             </Button>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, MapPin, Tag } from 'lucide-react';
+import { Clock, MapPin } from 'lucide-react';
 import { Tour } from '../../types';
 import { formatPrice } from '../../lib/utils';
 import { Button } from '../ui/button';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -9,7 +9,8 @@ import { TourHero } from '@/components/tours/TourHero';
 import { TourContent } from '@/components/tours/TourContent';
 import { ReviewsPanel } from '@/components/tours/ReviewsPanel';
 import { BookingSidebar } from '@/components/tours/BookingSidebar';
-import { usePageTitle } from '@/lib/seo';
+import { usePageMeta } from '@/lib/seo';
+import { branding } from '@/lib/branding';
 
 export function TourDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -20,7 +21,20 @@ export function TourDetail() {
     staleTime: 5 * 60 * 1000,
   });
 
-  usePageTitle(tour?.title ?? 'Тур');
+  const pageMeta = useMemo(
+    () => ({
+      title: tour?.title ?? 'Тур',
+      description: tour?.short_desc ?? branding.defaultDescription,
+      path: slug ? `/tours/${slug}` : '/tours',
+      openGraph: {
+        image: tour?.cover_image,
+        type: 'article',
+      },
+    }),
+    [slug, tour?.cover_image, tour?.short_desc, tour?.title],
+  );
+
+  usePageMeta(pageMeta);
 
   if (isLoading) {
     return (

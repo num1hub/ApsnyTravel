@@ -5,11 +5,16 @@ import { ArrowRight, Loader2, ShieldCheck, Star, Users } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { TourCard } from '../components/tours/TourCard';
 import { fetchTours } from '../lib/api';
-import { usePageTitle } from '../lib/seo';
+import { usePageMeta } from '../lib/seo';
 import { Tour } from '../types';
 
 export function Home() {
-  usePageTitle('Главная');
+  usePageMeta({
+    title: 'Главная',
+    description:
+      'Авторские экскурсии по Абхазии и Сочи с местным гидом. Выберите маршрут, узнайте детали и забронируйте тур онлайн.',
+    path: '/',
+  });
 
   const {
     data: tours,
