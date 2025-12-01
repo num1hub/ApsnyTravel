@@ -3,13 +3,18 @@ import { useQuery } from '@tanstack/react-query';
 import { TourCard } from '../components/tours/TourCard';
 import { REGIONS_LABELS, TYPES_LABELS } from '../constants';
 import { fetchTours } from '../lib/api';
-import { usePageTitle } from '../lib/seo';
+import { usePageMeta } from '../lib/seo';
 import { Tour, TourRegion, TourType } from '../types';
 import { Button } from '../components/ui/button';
 import { Loader2 } from 'lucide-react';
 
 export function Catalog() {
-  usePageTitle('Каталог туров');
+  usePageMeta({
+    title: 'Каталог туров',
+    description:
+      'Подборка экскурсий и туров по Абхазии и Сочи: горные озера, побережье, активные приключения и семейные поездки.',
+    path: '/catalog',
+  });
 
   const [selectedRegion, setSelectedRegion] = useState<TourRegion | 'all'>('all');
   const [selectedType, setSelectedType] = useState<TourType | 'all'>('all');

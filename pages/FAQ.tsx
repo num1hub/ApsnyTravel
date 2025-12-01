@@ -1,8 +1,12 @@
 import React from 'react';
-import { usePageTitle } from '../lib/seo';
+import { usePageMeta } from '../lib/seo';
 
 export function FAQ() {
-  usePageTitle('Частые вопросы');
+  usePageMeta({
+    title: 'Частые вопросы',
+    description: 'Ответы на популярные вопросы о поездках в Абхазию и Сочи: документы, оплата, погода и безопасность.',
+    path: '/faq',
+  });
 
   const faqs = [
     {

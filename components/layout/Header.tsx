@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Mountain } from 'lucide-react';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
+import { branding } from '@/lib/branding';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +23,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 font-bold text-xl text-teal-800" onClick={closeMenu}>
           <Mountain className="h-6 w-6" />
-          <span>ApsnyTravel</span>
+          <span>{branding.siteName}</span>
         </Link>
 
         {/* Desktop Nav */}

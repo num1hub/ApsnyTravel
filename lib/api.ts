@@ -1,6 +1,14 @@
 import { REVIEWS, TOURS } from '../constants';
 import { Review, Tour } from '../types';
 
+/**
+ * API boundary for tours and reviews.
+ *
+ * The UI always calls these functions. They operate in one of two modes:
+ * - Mock mode (default): serve data from constants with slight latency for realistic UX.
+ * - Remote mode: when VITE_API_URL is set, perform network calls while preserving error semantics.
+ */
+
 export class ApiError extends Error {
   status?: number;
   details?: unknown;
@@ -13,15 +21,20 @@ export class ApiError extends Error {
   }
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL?.trim();
+function getApiBaseUrl() {
+  return import.meta.env.VITE_API_URL?.trim();
+}
+
+const API_BASE_URL = getApiBaseUrl();
 const IS_REMOTE_API_ENABLED = Boolean(API_BASE_URL);
 const IS_PRODUCTION_BUILD = import.meta.env.PROD;
+const IS_MOCK_MODE = !IS_REMOTE_API_ENABLED;
 
 const FALLBACK_MIN_DELAY_MS = 120;
 const FALLBACK_MAX_DELAY_MS = 280;
 
 async function maybeDelay() {
-  if (IS_PRODUCTION_BUILD || IS_REMOTE_API_ENABLED) {
+  if (IS_PRODUCTION_BUILD || !IS_MOCK_MODE) {
     return;
   }
 
@@ -31,14 +44,18 @@ async function maybeDelay() {
   await new Promise((resolve) => setTimeout(resolve, delay));
 }
 
-async function safeParseJson(response: Response) {
-  try {
-    return await response.json();
-  } catch (error) {
-    return undefined;
+  async function safeParseJson(response: Response) {
+    try {
+      return await response.json();
+    } catch {
+      return undefined;
+    }
   }
-}
 
+/**
+ * Issue a GET request to the configured backend and normalize common error cases.
+ * In mock mode this function should never be called; callers guard with IS_REMOTE_API_ENABLED.
+ */
 async function request<T>(path: string): Promise<T> {
   if (!API_BASE_URL) {
     throw new ApiError('API base URL is not configured');
@@ -73,6 +90,12 @@ function filterActiveTours(tours: Tour[]) {
   return tours.filter((tour) => tour.is_active);
 }
 
+/**
+ * Fetch the list of tours.
+ *
+ * - Remote mode: GET /tours from the configured API, filtered by is_active.
+ * - Mock mode: return locally defined TOURS with a tiny random delay for UX realism.
+ */
 export async function fetchTours(): Promise<Tour[]> {
   if (IS_REMOTE_API_ENABLED) {
     const tours = await request<Tour[]>('/tours');
@@ -110,6 +133,12 @@ export async function fetchTourBySlug(slug: string): Promise<Tour> {
   return tour;
 }
 
+/**
+ * Fetch reviews for a given tour.
+ *
+ * - Remote mode: GET /reviews?tourId=ID and return as-is.
+ * - Mock mode: filter REVIEWS by tourId and sort by most recent first.
+ */
 export async function fetchReviewsByTourId(tourId: string): Promise<Review[]> {
   if (!tourId) {
     throw new ApiError('Missing tour id');

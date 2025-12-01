@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mountain } from 'lucide-react';
-import { CONTACT_LINKS } from '@/lib/contact';
+import { branding } from '@/lib/branding';
 
 export function Footer() {
   return (
@@ -11,11 +11,10 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 font-bold text-xl text-white mb-4">
               <Mountain className="h-6 w-6" />
-              <span>ApsnyTravel</span>
+              <span>{branding.siteName}</span>
             </div>
             <p className="text-sm leading-relaxed max-w-xs">
-              Индивидуальные туры по Абхазии и Сочи с опытным гидом Александром.
-              Более 10 лет опыта, комфортный транспорт и честные цены.
+              {branding.defaultDescription}
             </p>
           </div>
           
@@ -34,7 +33,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <a
-                  href={CONTACT_LINKS.telegramUrl}
+                  href={branding.contact.telegram}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-white transition-colors flex items-center gap-2"
@@ -44,7 +43,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href={CONTACT_LINKS.whatsappUrl}
+                  href={branding.contact.whatsapp}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-white transition-colors flex items-center gap-2"
@@ -52,7 +51,7 @@ export function Footer() {
                   WhatsApp
                 </a>
               </li>
-              <li>{CONTACT_LINKS.phoneDisplay}</li>
+              <li>{branding.contact.phone.display}</li>
             </ul>
           </div>
         </div>
